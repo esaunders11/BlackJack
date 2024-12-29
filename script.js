@@ -154,8 +154,17 @@ function dealerRound() {
                 }
             }, ms);
         }
-        if (dealerHand.includes(11) && dealerTotal > 21) {
-            dealerTotal -= 10;
+        if (dealerTotal > 21) {
+            for (let j = 0; j < dealerHand.length; j++) {
+                if (dealerHand[j].val === 11) {
+                    playerHand[j].val = 1;
+                    dealerTotal -= 10;
+                    break;
+                }
+            }
+            if (dealerTotal > 21) {
+                dealerPlay = false;
+            }
         } else {
             dealerPlay = false;
         }
@@ -252,9 +261,14 @@ hitBtn.addEventListener("click", () => {
         playerTotal += newCard.val;
         player.innerHTML += ` <img src=${newCard.img}>`;
         if (playerTotal > 21) {
-            if (playerHand.includes(11)) {
-                playerTotal -= 10;
-            } else {
+            for (let i = 0; i < playerHand.length; i++) {
+                if (playerHand[i].val === 11) {
+                    playerHand[i].val = 1;
+                    playerTotal -= 10;
+                    break;
+                }
+            }
+            if (playerTotal > 21) {
                 bust = true;
                 gamePlay = false;
                 endRound();
@@ -292,9 +306,14 @@ ddBtn.addEventListener("click", () => {
         player.innerHTML += ` <img src=${newCard.img}>`;
 
         if (playerTotal > 21) {
-            if (playerHand.includes(11)) {
-                playerTotal -= 10;
-            } else {
+            for (let i = 0; i < playerHand.length; i++) {
+                if (playerHand[i].val === 11) {
+                    playerHand[i].val = 1;
+                    playerTotal -= 10;
+                    break;
+                }
+            }
+            if (playerTotal > 21) {
                 bust = true;
                 gamePlay = false;
                 endRound();
