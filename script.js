@@ -28,6 +28,12 @@ let bet = 0;
 let total = 1000;
 let count = 0;
 
+// Card suites
+const HEART = "h";
+const SPADE = "s";
+const CLUB = "c";
+const DIAMOND = "d";
+
 updateTotal();
 
 // Function to prepare deck and shuffle
@@ -35,19 +41,47 @@ function shuffle() {
         deck = [];
         count = 0;
         updateTotal();
-        player.innerHTML = "Player Hand:";
-        dealer.innerHTML = "Dealer Hand:";
+        player.innerHTML = "";
+        dealer.innerHTML = "";
+        result.innerHTML = "";
+        let suite = HEART;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
                 for (let k = 2; k < 10; k++) {
-                    deck.push(k);
+                    deck.push({
+                        val: k,
+                        img: "cards/" + suite + k + ".gif"
+                    });
                 }
     
-                deck.push(10);
-                deck.push(10);
-                deck.push(10);
-                deck.push(10);
-                deck.push(11);
+                deck.push({
+                    val: 10,
+                    img: "cards/" + suite + "T" + ".gif"
+                });
+                deck.push({
+                    val: 10,
+                    img: "cards/" + suite + "J" + ".gif"
+                });
+                deck.push({
+                    val: 10,
+                    img: "cards/" + suite + "Q" + ".gif"
+                });
+                deck.push({
+                    val: 10,
+                    img: "cards/" + suite + "Q" + ".gif"
+                });
+                deck.push({
+                    val: 11,
+                    img: "cards/" + suite + "A" + ".gif"
+                });
+
+                if (j === 0) {
+                    suite = CLUB;
+                } else if (j === 1) {
+                    suite = SPADE;
+                } else if (j === 2) {
+                    suite = CLUB;
+                }
             }
         }
     
@@ -71,10 +105,10 @@ function deal() {
     calculateCount(dealerHand[0]);
     calculateCount(dealerHand[1]);
 
-    playerTotal = playerHand[0] + playerHand[1];
-    dealerTotal = dealerHand[0] + dealerHand[1];
-    player.innerHTML += ` ${playerHand[0]} ${playerHand[1]}`;
-    dealer.innerHTML += ` ${dealerHand[0]}`;
+    playerTotal = playerHand[0].val + playerHand[1].val;
+    dealerTotal = dealerHand[0].val + dealerHand[1].val;
+    player.innerHTML += ` <img src=${playerHand[0].img}> <img src=${playerHand[1].img}>`;
+    dealer.innerHTML += ` <img src=${dealerHand[0].img}>`;
 
     if (playerTotal === 21) {
         total += bet * 1.5;
@@ -82,15 +116,16 @@ function deal() {
         playerHand = [];
         dealerHand = [];
         dealerTotal = 0;
+        result.innerHTML = "You Win!";
     }
 
-    if (playerHand[0] != playerHand[1]) {
+    if (playerHand[0].val != playerHand[1].val) {
         splitBtn.disable = true;
         splitBtn.style.opacity = "50%";
     }
 
     if (dealerTotal === 21) {
-        dealer.innerHTML += ` ${dealerHand[1]}`;
+        dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
         endRound();
     }
 
@@ -101,20 +136,23 @@ function deal() {
 // Function to let the dealer play
 function dealerRound() {
     gamePlay = false;
-    dealer.innerHTML += ` ${dealerHand[1]}`;
+    let ms = 2000;
+    let i = 0;
+    dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
     let flag = true;
     while (dealerPlay) {
         while (dealerTotal < 17 && flag){
             let newCard = deck.pop();
             dealerHand.push(newCard);
-            calculateCount(newCard);
-            dealerTotal += newCard;
+            calculateCount(newCard.val);
+            dealerTotal += newCard.val;
+            i++;
             setTimeout(() => {
-                dealer.innerHTML += ` ${newCard}`;
+                dealer.innerHTML += ` <img src=${newCard.img}>`;
                 if (dealerTotal > 16) {
                     flag = false;
                 }
-            }, 2000);
+            }, ms);
         }
         if (dealerHand.includes(11) && dealerTotal > 21) {
             dealerTotal -= 10;
@@ -125,8 +163,7 @@ function dealerRound() {
     if (dealerTotal > 21) {
         dealerBust = true;
     }
-    setTimeout(endRound(), 4000, !flag);
-
+    setTimeout(endRound, ms * i);
 }
 
 
@@ -172,7 +209,6 @@ function updateTotal() {
 
 // Function to calculate the count
 function calculateCount(card) {
-    card = Number(card);
     if (card > 1 && card < 7) {
         count++;
     } else if (card === 10 || card === 11) {
@@ -186,17 +222,17 @@ newGameBtn.addEventListener("click", shuffle);
 // Even click the bet button
 // Takes bet and starts the round by dealing the cards
 betBtn.addEventListener("click", () => {
-    player.innerHTML = "Player Hand:";
-    dealer.innerHTML = "Dealer Hand:";
+    player.innerHTML = "";
+    dealer.innerHTML = "";
     result.innerHTML = "";
     if (!dealerPlay) {
         if (deck.length <= 15) {
-            newGame();
+            shuffle();
         }
         gamePlay = true;
         bet = Number(amount.value);
         deal();
-    }
+    } 
 
     console.log("Start Hand");
 });
@@ -211,10 +247,10 @@ hitBtn.addEventListener("click", () => {
 
         let newCard = deck.pop();
         playerHand.push(newCard);
-        calculateCount(newCard);
+        calculateCount(newCard.val);
         updateTotal();
-        playerTotal += newCard;
-        player.innerHTML += ` ${newCard}`;
+        playerTotal += newCard.val;
+        player.innerHTML += ` <img src=${newCard.img}>`;
         if (playerTotal > 21) {
             if (playerHand.includes(11)) {
                 playerTotal -= 10;
@@ -246,12 +282,14 @@ standBtn.addEventListener("click", () => {
 // Add one card then end the round
 ddBtn.addEventListener("click", () => {
     if (gamePlay) {
+        bet = bet * 2;
+
         let newCard = deck.pop();
         playerHand.push(newCard);
-        calculateCount(newCard);
+        calculateCount(newCard.val);
         updateTotal();
-        playerTotal += newCard;
-        player.innerHTML += ` ${newCard}`;
+        playerTotal += newCard.val;
+        player.innerHTML += ` <img src=${newCard.img}>`;
 
         if (playerTotal > 21) {
             if (playerHand.includes(11)) {

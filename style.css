@@ -1,0 +1,41 @@
+body {
+    justify-content: center;
+    color: white;
+    background-color: rgba(0, 71, 0, 0.882);
+}
+
+.result {
+
+    text-align: center;
+}
+
+.container {
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.header {
+    text-align: center;
+    font-size: 50px;
+}
+
+.dealer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#amount {
+    width: 80%;
+}
+
+
+
+button:hover {
+    cursor: pointer;
+}
+

@@ -4,17 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackJack</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="numbers">
+        <div class="money"></div>
+        <div class="count"></div>
+        <button id="game">New Deck</button>
+    </div>
+    <h2 class="header">Black Jack</h2>
+    <div class="dealer"></div>
+    <br>
+    <br>
+    <div class="result"></div>
     <div class="container">
-        <div class="dealer"></div>
         <div class="player">
             <div class="total"></div>
-            <button id="game">New Game</button>
+            <br>
+            <input type="text" id="amount">
+            <button id="bet">Bet</button>
+            <br>
+            <br>
             <button id="hit">Hit</button>
             <button id="stand">Stand</button>
-            <button id="bet">Bet</button>
-            <input type="text" id="amount">
+            <button id="down">DD</button>
+            <button id="split">Split</button>
         </div>
     </div>
     <script src="script.js"></script>
