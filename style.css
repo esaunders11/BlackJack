@@ -1,12 +1,57 @@
+@font-face {
+    font-family: myFont;
+    src: url(Blacknorthdemo-mLE25.otf);
+}
+
 body {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     color: white;
     background-color: rgba(0, 71, 0, 0.882);
+    height: 100vh; /* Full height of the viewport */
+    margin: 0; 
+    font-family: myFont;
+}
+
+.header {
+    text-align: center;
+    font-size: 50px;
+    margin: 10px 0 30px 0;
+    letter-spacing: 1px;
+}
+
+.numbers {
+    margin-left: 1ch;
+    margin-top: 7px;
+    font-size: 20px;
+}
+
+.numbers button {
+    padding: 5px 12px;
+    font-size: 16px;
+    font-family: myFont;
+    font-weight: bold;
+    color: #388E3C;
+    background-color: white; /* Green button color */
+    border: 2px solid #388E3C; /* Darker green border */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .result {
-
+    font-size: 50px;
+    font-family: myFont;
+    text-transform: uppercase;
     text-align: center;
+    margin: 20px 0; /* Add some spacing above and below */
+    position: absolute; /* Use absolute positioning */
+    top: 50%; /* Place it vertically in the middle */
+    left: 50%; /* Place it horizontally in the middle */
+    transform: translate(-50%, -50%); /* Adjust position based on size */
+    z-index: 1; /* Make sure it appears above other elements */
+    
 }
 
 .container {
@@ -14,28 +59,56 @@ body {
     height: 70vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end; /* Align player at the bottom */
     text-align: center;
+    position: relative; /* Allows proper positioning for the result */
 }
 
-.header {
+.dealerHeader {
     text-align: center;
-    font-size: 50px;
+    letter-spacing: 1px;
 }
 
 .dealer {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 50px;
+}
+
+.player {
+    margin-top: 50px; /* Space between player and result */
+    margin-bottom: 50px;
 }
 
 #amount {
-    width: 80%;
+    padding: 8px;
+    font-size: 16px;
+    color: rgb(0, 0, 0);
+    font-family: myFont;
+    border: 2px solid #4CAF50; /* Green border */
+    border-radius: 5px;
+    outline: none;
+    background-color: #ffffff;
+    width: 100px;
+    text-align: center;
 }
 
-
-
-button:hover {
+.player button {
+    padding: 8px 20px;
+    font-size: 16px;
+    font-family: myFont;
+    font-weight: bold;
+    color: #388E3C;
+    background-color: white; /* Green button color */
+    border: 2px solid #388E3C; /* Darker green border */
+    border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
+
+button:active {
+    background-color: rgba(0, 71, 0, 0.882);
+}
+
 

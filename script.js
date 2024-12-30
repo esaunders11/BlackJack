@@ -11,6 +11,7 @@ const ddBtn = document.getElementById("down");
 const splitBtn = document.getElementById("split");
 const amount = document.querySelector("#amount");
 const result = document.querySelector(".result");
+const dealerHeader = document.querySelector(".dealerHeader");
 
 // Set up deck and hand lists
 let deck = [];
@@ -44,6 +45,7 @@ function shuffle() {
         player.innerHTML = "";
         dealer.innerHTML = "";
         result.innerHTML = "";
+        dealerHeader.innerHTML = "";
         let suite = HEART;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
@@ -116,12 +118,17 @@ function deal() {
         playerHand = [];
         dealerHand = [];
         dealerTotal = 0;
+        amount.innerHTML = "";
         result.innerHTML = "You Win!";
     }
 
     if (playerHand[0].val != playerHand[1].val) {
         splitBtn.disable = true;
         splitBtn.style.opacity = "50%";
+        if (playerHand[0].val === 11) {
+            playerHand[0].val = 1;
+            playerTotal -= 10;
+        }
     }
 
     if (dealerTotal === 21) {
@@ -134,45 +141,51 @@ function deal() {
 }
 
 // Function to let the dealer play
-function dealerRound() {
+async function dealerRound() {
     gamePlay = false;
     let ms = 2000;
     let i = 0;
     dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
-    let flag = true;
     while (dealerPlay) {
-        while (dealerTotal < 17 && flag){
-            let newCard = deck.pop();
-            dealerHand.push(newCard);
-            calculateCount(newCard.val);
-            dealerTotal += newCard.val;
-            i++;
-            setTimeout(() => {
-                dealer.innerHTML += ` <img src=${newCard.img}>`;
-                if (dealerTotal > 16) {
-                    flag = false;
-                }
-            }, ms);
+        
+        while (dealerTotal < 17) {
+            await new Promise((resolve) => {
+                let newCard = deck.pop();
+                dealerHand.push(newCard);
+                calculateCount(newCard.val);
+                dealerTotal += newCard.val;
+                i++;
+
+                setTimeout(() => {
+                    dealer.innerHTML += ` <img src=${newCard.img}>`;
+
+                    resolve();
+                }, ms);
+            });
         }
+
         if (dealerTotal > 21) {
+            let aceAdjusted = false;
             for (let j = 0; j < dealerHand.length; j++) {
                 if (dealerHand[j].val === 11) {
-                    playerHand[j].val = 1;
+                    dealerHand[j].val = 1;
                     dealerTotal -= 10;
+                    aceAdjusted = true;
                     break;
                 }
             }
-            if (dealerTotal > 21) {
+            if (!aceAdjusted || dealerTotal > 21) {
                 dealerPlay = false;
             }
-        } else {
-            dealerPlay = false;
+        } else if (dealerTotal >= 17) {
+            dealerPlay = false; 
         }
     }
     if (dealerTotal > 21) {
         dealerBust = true;
     }
-    setTimeout(endRound, ms * i);
+
+    setTimeout(endRound, 1000);
 }
 
 
@@ -238,6 +251,7 @@ betBtn.addEventListener("click", () => {
         if (deck.length <= 15) {
             shuffle();
         }
+        dealerHeader.innerHTML = "Dealer";
         gamePlay = true;
         bet = Number(amount.value);
         deal();
@@ -253,6 +267,9 @@ hitBtn.addEventListener("click", () => {
     if (gamePlay) {
         ddBtn.style.opacity = "50%";
         ddBtn.disabled = true;
+
+        splitBtn.style.opacity = "50%";
+        splitBtn.disabled = true;
 
         let newCard = deck.pop();
         playerHand.push(newCard);
