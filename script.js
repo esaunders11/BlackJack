@@ -60,7 +60,6 @@ function shuffle() {
                         img: "cards/" + suite + k + ".gif"
                     });
                 }
-    
                 deck.push({
                     val: 10,
                     img: "cards/" + suite + "T" + ".gif"
@@ -101,7 +100,7 @@ function shuffle() {
 }
 
 // Function to deal out cards to start the round
-function deal() {
+async function deal() {
     playerHand[0] = [];
     playerHand[0].push(deck.pop());
     dealerHand.push(deck.pop());
@@ -115,36 +114,56 @@ function deal() {
 
     playerTotal = playerHand[0][0].val + playerHand[0][1].val;
     dealerTotal = dealerHand[0].val + dealerHand[1].val;
-    player1.innerHTML += ` <img src=${playerHand[0][0].img}> <img src=${playerHand[0][1].img}>`;
-    dealer.innerHTML += ` <img src=${dealerHand[0].img}>`;
+    //player1.innerHTML += ` <img src=${playerHand[0][0].img}> <img src=${playerHand[0][1].img}>`;
+    //dealer.innerHTML += ` <img src=${dealerHand[0].img}>`;
 
-    if (playerTotal === 21) {
-        total += bet * 1.5;
-        gamePlay = false;
-        playerHand = [];
-        dealerHand = [];
-        dealerTotal = 0;
-        amount.value = "";
-        amount.disabled = false;
-        result.innerHTML = "You Win!";
-    }
+    setTimeout(() => {
+        player1.innerHTML += ` <img src=${playerHand[0][0].img}>`;
+    }, 1000);
 
-    if (playerHand[0][0].val != playerHand[0][1].val) {
-        splitBtn.disable = true;
-        splitBtn.style.opacity = "50%";
-        if (playerHand[0].val === 11) {
-            playerHand[0].val = 1;
-            playerTotal -= 10;
+    setTimeout(() => {
+        dealer.innerHTML += ` <img src=${dealerHand[0].img}>`;
+    }, 2000);
+
+    setTimeout(() => {
+        player1.innerHTML += ` <img src=${playerHand[0][1].img}>`;
+    }, 3000);
+
+    await new Promise((resolve) => {
+        setTimeout(() => {
+            dealer.innerHTML += ` <img src="cards/blank.gif">`;
+            resolve();
+        }, 4000);
+
+        if (playerTotal === 21) {
+            total += bet * 1.5;
+            gamePlay = false;
+            playerHand = [];
+            dealerHand = [];
+            dealerTotal = 0;
+            amount.value = "";
+            amount.disabled = false;
+            result.innerHTML = "You Win!";
         }
-    }
-
-    if (dealerTotal === 21) {
-        dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
-        endRound();
-    }
-
-    updateTotal();
-    console.log("Hand Dealt");
+    
+        if (playerHand[0][0].val != playerHand[0][1].val) {
+            splitBtn.disable = true;
+            splitBtn.style.opacity = "50%";
+            if (playerHand[0].val === 11) {
+                playerHand[0].val = 1;
+                playerTotal -= 10;
+            }
+        }
+    
+        if (dealerTotal === 21) {
+            dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
+            endRound();
+        }
+    
+        updateTotal();
+        console.log("Hand Dealt");
+    })
+    
 }
 
 // Function to let the dealer play
@@ -152,7 +171,7 @@ async function dealerRound() {
     gamePlay = false;
     let ms = 2000;
     let i = 0;
-    dealer.innerHTML += ` <img src=${dealerHand[1].img}>`;
+    dealer.innerHTML = ` <img src=${dealerHand[0].img}> <img src=${dealerHand[1].img}>`;
     while (dealerPlay) {
         
         while (dealerTotal < 17) {
